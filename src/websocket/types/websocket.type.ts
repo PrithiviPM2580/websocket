@@ -6,3 +6,8 @@ export interface ConnectedClient {
   connectedAt: Date;
   username?: string;
 }
+
+export type WebSocketMessage =
+  | { type: "CHAT"; message: string }
+  | { type: "JOIN_ROOM"; roomId: string }
+  | { type: "TYPING"; isTyping: boolean };

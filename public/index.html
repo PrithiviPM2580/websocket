@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Websocket Practice</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+      }
+      .socket {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 2em;
+      }
+      .btns {
+        display: flex;
+        gap: 1em;
+      }
+      button {
+        padding: 0.5em 1em;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="socket">
+      <h1>Websocket Practice</h1>
+      <div class="btns">
+        <button class="connect">Connect</button>
+        <button class="send">Send Message</button>
+      </div>
+    </div>
+  </body>
+  <script>
+    let socket;
+    const connectBtn = document.querySelector(".connect");
+    const sendBtn = document.querySelector(".send");
+
+    connectBtn.addEventListener("click", () => {
+      socket = new WebSocket("ws://localhost:3000");
+
+      socket.onopen = () => {
+        console.log("Connected to server");
+      };
+
+      socket.onmessage = (event) => {
+        console.log("Message from server: ", event.data);
+      };
+
+      socket.onclose = () => {
+        console.log("Disconnected from server");
+      };
+    });
+
+    sendBtn.addEventListener("click", () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("Hello Server");
+      } else {
+        console.log("Socket is not connected");
+      }
+    });
+  </script>
+</html>
