@@ -52,28 +52,44 @@
   </body>
   <script>
     let socket;
+    let isConnected = false;
     const connectBtn = document.querySelector(".connect");
     const sendBtn = document.querySelector(".send");
 
     connectBtn.addEventListener("click", () => {
       socket = new WebSocket("ws://localhost:3000");
+      isConnected = true;
 
       socket.onopen = () => {
         console.log("Connected to server");
       };
 
       socket.onmessage = (event) => {
-        console.log("Message from server: ", event.data);
+        console.log("Raw message:", event.data);
+
+        try {
+          const message = JSON.parse(event.data);
+          console.log("Parsed message:", message);
+        } catch (error) {
+          console.error("Unable to parse JSON:", error);
+        }
       };
 
       socket.onclose = () => {
         console.log("Disconnected from server");
       };
+      isConnected = false;
     });
 
     sendBtn.addEventListener("click", () => {
       if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send("Hello Server");
+        socket.send(
+          JSON.stringify({
+            type: "CHAT",
+            send: "Browser1",
+            message: "Hello from Browser1",
+          }),
+        );
       } else {
         console.log("Socket is not connected");
       }
