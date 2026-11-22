@@ -43,6 +43,7 @@
   </head>
   <body>
     <div class="socket">
+      <h3>Online Users: <span class="onlineCount">0</span></h3>
       <h1>Websocket Practice</h1>
       <div class="btns">
         <button class="connect">Connect</button>
@@ -55,6 +56,7 @@
     let isConnected = false;
     const connectBtn = document.querySelector(".connect");
     const sendBtn = document.querySelector(".send");
+    const onlineCount = document.querySelector(".onlineCount");
 
     connectBtn.addEventListener("click", () => {
       socket = new WebSocket("ws://localhost:3000");
@@ -68,8 +70,11 @@
         console.log("Raw message:", event.data);
 
         try {
-          const message = JSON.parse(event.data);
-          console.log("Parsed message:", message);
+          const data = JSON.parse(event.data);
+
+          if (data.type === "ONLINE_COUNT") {
+            onlineCount.textContent = data.count;
+          }
         } catch (error) {
           console.error("Unable to parse JSON:", error);
         }
@@ -77,8 +82,8 @@
 
       socket.onclose = () => {
         console.log("Disconnected from server");
+        isConnected = false;
       };
-      isConnected = false;
     });
 
     sendBtn.addEventListener("click", () => {
